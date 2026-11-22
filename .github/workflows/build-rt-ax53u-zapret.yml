@@ -1,1 +1,24 @@
+name: Build ASUS RT-AX53U with Zapret
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rt-ax53u-zapret-dispatch
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch only ramips_mt7621 build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/dispatches" \
+            -f event_type='ramips_mt7621 zapret' \
+            -F client_payload[target]='ramips_mt7621'
+          echo "Sent a single ramips_mt7621 build request to the existing firmware workflow."
